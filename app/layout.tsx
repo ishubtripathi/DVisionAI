@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-    generator: 'v0.app'
+    generator: 'Shubhrant Tripathi'
 }
 
 export const viewport: Viewport = {

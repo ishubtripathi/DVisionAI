@@ -25,7 +25,7 @@ export default function UseCasesSection() {
   ]
 
   return (
-    <section className="py-24">
+    <section className="py-24 px-10">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">Use Cases</h2>

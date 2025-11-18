@@ -83,7 +83,7 @@ export default function ImageUploader({ onImageSelect, disabled = false }: Image
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
         onClick={() => !disabled && fileInputRef.current?.click()}
-        className={`glass-dark rounded-xl p-8 border-2 border-dashed cursor-pointer transition-all duration-200 ${
+        className={`glass-dark rounded-xl p-8 border-2 border-dashed border-gray-900 cursor-pointer transition-all duration-200 ${
           isDragging
             ? 'border-primary/80 bg-primary/10'
             : 'border-border/50 hover:border-primary/50'

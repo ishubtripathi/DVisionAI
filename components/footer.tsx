@@ -7,7 +7,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="border-t border-border/40 bg-background/50 backdrop-blur-sm">
+    <footer className="border-t border-border/40 bg-background/50 backdrop-blur-sm px-10">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-12">
           {/* Brand Column */}
@@ -81,7 +81,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-border/40 pt-8 flex flex-col md:flex-row items-center justify-between">
+        <div className="border-t border-border/40 pt-8 flex flex-col md:flex-row items-center justify-between ">
           <p className="text-sm text-muted-foreground">© {currentYear} DVisionAI. All rights reserved.</p>
           <div className="flex items-center gap-6 mt-4 md:mt-0 text-sm">
             <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Privacy</a>

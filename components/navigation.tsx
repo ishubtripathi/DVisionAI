@@ -11,7 +11,7 @@ export default function Navigation() {
 
   return (
     <nav className="fixed top-0 w-full z-50 backdrop-blur-md bg-background/80 border-b border-border/40">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-3 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" onClick={closeMenu} className="flex items-center gap-2 font-bold text-xl gradient-text">
@@ -34,9 +34,9 @@ export default function Navigation() {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <button className="px-4 py-2 text-foreground/80 hover:text-foreground transition-colors text-sm font-medium">
+            {/* <button className="px-4 py-2 text-foreground/80 hover:text-foreground transition-colors text-sm font-medium">
               Sign In
-            </button>
+            </button> */}
             <Link
               href="/app"
               className="px-6 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-all hover-lift text-sm"

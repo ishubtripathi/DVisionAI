@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -76,8 +76,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -174,5 +174,39 @@
 
   .hover-lift {
     @apply transition-all duration-300 hover:translate-y-[-4px];
+  }
+
+  svg text {
+    font-family: 'Russo One', sans-serif;
+    text-transform: uppercase;
+    animation: stroke 5s infinite alternate;
+    stroke-width: 1;
+    stroke: #365fa0;
+    font-size: 200px;
+  }
+  @keyframes stroke {
+    0% {
+      fill: rgba(72, 138, 20, 0);
+      stroke: rgba(128, 128, 128, 1);
+      stroke-dashoffset: 25%;
+      stroke-dasharray: 0 50%;
+      stroke-width: 1;
+    }
+    70% {
+      fill: rgba(72, 138, 20, 0);
+      stroke: rgba(54, 95, 160, 1);
+    }
+    80% {
+      fill: rgba(72, 138, 20, 0);
+      stroke: rgba(54, 95, 160, 1);
+      stroke-width: 1;
+    }
+    100% {
+      fill: rgba(72, 138, 204, 1);
+      stroke: rgba(54, 95, 160, 0);
+      stroke-dashoffset: -25%;
+      stroke-dasharray: 50% 0;
+      stroke-width: 0;
+    }
   }
 }
