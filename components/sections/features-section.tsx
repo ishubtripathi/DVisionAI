@@ -35,28 +35,45 @@ export default function FeaturesSection() {
   ]
 
   return (
-    <section className="py-24 px-10">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">Powerful Features</h2>
-          <p className="text-xl text-muted-foreground">Everything you need to transform images into intelligent captions.</p>
+    <section className="py-4 px-4 sm:px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <h2 className="text-2xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold mb-2 leading-tight uppercase">
+              Powerful{" "}
+              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Features
+              </span>
+            </h2>
+          <p className="text-sm sm:text-base text-muted-foreground">Everything you need to transform images into intelligent captions — reliable, fast and secure.</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, i) => {
             const Icon = feature.icon
             return (
-              <div
+              <article
                 key={i}
-                className="glass-dark p-8 hover-lift slide-up"
-                style={{ animationDelay: `${i * 100}ms` }}
+                className="relative group overflow-hidden rounded-2xl p-6 sm:p-8 bg-gradient-to-br from-white/3 to-white/2 border border-white/6 backdrop-blur-md shadow-sm hover:shadow-lg transition-transform duration-300 hover:-translate-y-1"
+                aria-labelledby={`feature-${i}`}
+                role="region"
               >
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center mb-4">
-                  <Icon className="text-primary" size={24} />
+                <div className="flex items-start gap-4">
+                  <div className="flex-none w-12 h-12 sm:w-14 sm:h-14 rounded-lg grid place-items-center bg-gradient-to-br from-primary to-accent text-white shadow-md">
+                    <Icon size={20} />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 id={`feature-${i}`} className="text-lg sm:text-xl font-semibold text-white truncate">
+                      {feature.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm">{feature.description}</p>
-              </div>
+
+                <div className="absolute -right-6 -bottom-6 w-36 h-36 rounded-full bg-gradient-to-tr from-primary/10 to-accent/6 pointer-events-none blur-md opacity-60" />
+              </article>
             )
           })}
         </div>

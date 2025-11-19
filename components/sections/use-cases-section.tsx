@@ -1,56 +1,88 @@
-import { FileText, ShoppingCart, Accessibility, Search } from 'lucide-react'
+"use client";
+
+import {
+  FileText,
+  ShoppingCart,
+  Accessibility,
+  Search,
+  AccessibilityIcon,
+  ImageIcon,
+  Brain,
+  Layers,
+} from "lucide-react";
 
 export default function UseCasesSection() {
   const useCases = [
     {
-      icon: FileText,
-      title: 'Content Creation',
-      description: 'Automatically generate descriptions for blog posts, social media, and marketing materials.',
+      title: "Image Captioning",
+      description: "Automatically generate descriptive captions for any image.",
+      icon: ImageIcon,
     },
     {
+      title: "Accessibility",
+      description: "Help visually-impaired users understand visual content.",
+      icon: AccessibilityIcon,
+    },
+    {
+      title: "E-commerce",
+      description: "Generate product descriptions from product images.",
       icon: ShoppingCart,
-      title: 'E-commerce',
-      description: 'Create compelling product descriptions that boost sales and improve SEO.',
     },
     {
-      icon: Accessibility,
-      title: 'Web Accessibility',
-      description: 'Generate alt text for images to make your website accessible to everyone.',
+      title: "Content Automation",
+      description: "Bulk-process image descriptions for blogs & media.",
+      icon: FileText,
     },
     {
-      icon: Search,
-      title: 'SEO Optimization',
-      description: 'Improve search rankings with detailed, keyword-rich image descriptions.',
+      title: "Research",
+      description: "Use deep learning captioning for datasets and studies.",
+      icon: Brain,
     },
-  ]
+    {
+      title: "Applications",
+      description: "Enhance mobile or web apps with AI vision capabilities.",
+      icon: Layers,
+    },
+  ];
 
   return (
-    <section className="py-24 px-10">
-      <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 gradient-text">Use Cases</h2>
-          <p className="text-xl text-muted-foreground">Discover how DVisionAI can transform your workflow.</p>
+    <section className="py-16 px-4 sm:px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto">
+        <div className="max-w-3xl mx-auto text-center mb-24">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold mb-2 leading-tight uppercase">
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              Use
+            </span>{" "}
+            Cases
+          </h2>
+          <p className="text-base sm:text-lg text-muted-foreground">
+            Discover how DVisionAI can transform workflows across teams — from
+            marketing to accessibility and e‑commerce.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {useCases.map((useCase, i) => {
-            const Icon = useCase.icon
-            return (
-              <div key={i} className="glass-dark p-8 hover-lift slide-up" style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/30 to-accent/30 flex items-center justify-center flex-shrink-0">
-                    <Icon className="text-primary" size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">{useCase.title}</h3>
-                    <p className="text-muted-foreground">{useCase.description}</p>
-                  </div>
-                </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {useCases.map((item, index) => (
+            <div key={index} className="group">
+              {/* Icon + Title */}
+              <div className="flex items-center gap-3 mb-3">
+                <item.icon className="w-5 h-5 text-blue-400" />
+                <h3 className="text-lg font-medium bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent uppercase">
+                  {item.title}
+                </h3>
               </div>
-            )
-          })}
+
+              {/* Description */}
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {item.description}
+              </p>
+
+              {/* Subtle divider */}
+              <div className="mt-6 h-px w-full bg-white/10 group-hover:bg-white/20 transition"></div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

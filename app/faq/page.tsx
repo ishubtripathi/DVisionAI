@@ -3,7 +3,7 @@
 import Navigation from '@/components/navigation'
 import Footer from '@/components/footer'
 import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, MessageCircle } from 'lucide-react'
 
 export default function FAQPage() {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
@@ -47,44 +47,87 @@ export default function FAQPage() {
     <main className="min-h-screen bg-background text-foreground">
       <Navigation />
 
-      <section className="pt-32 pb-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-16">
-              <h1 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">Frequently Asked Questions</h1>
-              <p className="text-xl text-muted-foreground">Find answers to common questions about DVisionAI.</p>
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-[40vw] max-w-[500px] h-[40vw] max-h-[500px] bg-[#1A1A1A] blur-[140px] rounded-full opacity-40 pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[35vw] max-w-[400px] h-[35vw] max-h-[400px] bg-[#1F1F1F] blur-[120px] rounded-full opacity-40 pointer-events-none" />
+
+      <section className="pt-24 md:pt-32 pb-16 md:pb-24 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="text-center mb-12 md:mb-16">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight uppercase">
+              Frequently Asked {" "}
+              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Questions
+              </span>{" "}
+            </h1>
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                Everything you need to know about DVisionAI. Can't find what you're looking for? Our support team is here to help.
+              </p>
             </div>
 
-            <div className="space-y-4">
+            {/* FAQ Items */}
+            <div className="space-y-3 md:space-y-4 mb-12">
               {faqs.map((faq, i) => (
-                <button
+                <div
                   key={i}
-                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                  className="w-full glass-dark p-6 text-left transition-all hover:bg-opacity-50"
+                  className="group"
                 >
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold pr-4">{faq.question}</h3>
-                    <ChevronDown
-                      size={20}
-                      className={`flex-shrink-0 transition-transform ${
-                        openIndex === i ? 'rotate-180' : ''
-                      }`}
-                    />
-                  </div>
+                  <button
+                    onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                    className="w-full p-4 sm:p-6 text-left bg-gradient-to-br from-white/3 to-white/2 border border-white/6 rounded-2xl backdrop-blur-md shadow-sm hover:shadow-lg transition-all duration-200"
+                    aria-expanded={openIndex === i}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      {/* <h3 className="text-lg font-medium bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent uppercase">
+                  {item.title}
+                </h3> */}
+                      <h3 className="text-base sm:text-lg font-semibold text-white leading-relaxed pr-2">
+                        {faq.question}
+                      </h3>
+                      <ChevronDown
+                        size={20}
+                        className={`flex-shrink-0 text-primary transition-transform duration-300 ${
+                          openIndex === i ? 'rotate-180' : ''
+                        }`}
+                        aria-hidden
+                      />
+                    </div>
 
-                  {openIndex === i && (
-                    <p className="mt-4 text-muted-foreground">{faq.answer}</p>
-                  )}
-                </button>
+                    {openIndex === i && (
+                      <p className="mt-4 text-sm sm:text-base text-gray-600 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    )}
+                  </button>
+                </div>
               ))}
             </div>
 
-            <div className="mt-16 glass-dark p-8 text-center">
-              <h2 className="text-2xl font-bold mb-4">Still have questions?</h2>
-              <p className="text-muted-foreground mb-6">Can't find the answer you're looking for? Our team is here to help.</p>
-              <button className="px-8 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold transition-all">
-                Contact Support
-              </button>
+            {/* Contact Support Card */}
+            <div className="relative overflow-hidden rounded-2xl p-6 sm:p-8 md:p-10 bg-gradient-to-br from-white/3 to-white/2 border border-white/6 backdrop-blur-md shadow-lg">
+              <div className="absolute -right-12 -bottom-12 w-40 h-40 rounded-full bg-gradient-to-tr from-primary/10 to-accent/6 pointer-events-none blur-md opacity-60" />
+
+              <div className="relative z-10 text-center max-w-2xl mx-auto">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle size={24} className="text-white" />
+                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-bold mb-3">Still have questions?</h2>
+                <p className="text-sm sm:text-base text-muted-foreground mb-6 max-w-xl mx-auto">
+                  Can't find the answer you're looking for? Our dedicated support team is here to help you 24/7.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+                  <button className="px-6 py-3 bg-primary hover:brightness-110 text-white font-semibold rounded-lg transition-all">
+                    Contact Support
+                  </button>
+                  <button className="px-6 py-3 border border-white/10 text-white/90 hover:bg-white/5 font-semibold rounded-lg transition-all">
+                    Email Us
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

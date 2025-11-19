@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Sparkles } from "lucide-react";
+import frontGif from "@/public/animation/var7.gif";
 
 export default function HeroSection() {
   return (
@@ -14,9 +16,11 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-12">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 mb-2 sm:mb-6 fade-in text-sm">
-            <Sparkles size={16} className="text-primary" />
-            <span className="text-sm font-medium">Powered by Advanced AI</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20 mb-6">
+            <Sparkles size={16} className="text-blue-400" />
+            <span className="text-sm font-semibold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Powered by Advanced AI
+            </span>
           </div>
 
           <svg
@@ -31,10 +35,11 @@ export default function HeroSection() {
           </svg>
 
           <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto slide-up px-2">
-            Experience the future of image understanding. DVisionAI uses cutting-edge AI to generate accurate, detailed captions instantly.
+            Experience the future of image understanding. DVisionAI uses
+            cutting-edge AI to generate accurate, detailed captions instantly.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 md:mb-12 slide-up">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-8 md:mb-12 slide-up relative z-20">
             <Link
               href="/app"
               className="px-5 sm:px-8 py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold transition-all hover-lift inline-flex items-center gap-2 text-sm sm:text-base"
@@ -47,19 +52,19 @@ export default function HeroSection() {
           </div>
 
           {/* Preview Box - responsive aspect and sizing */}
-          <div className="relative mx-auto max-w-full md:max-w-3xl slide-up px-2">
-            <div className="glass-dark p-1 rounded-xl">
-              <div className="bg-black/60 rounded-2xl p-6 md:p-8 aspect-[16/9] sm:aspect-video flex items-center justify-center border border-white/5">
-                <div className="text-center px-2">
-                  <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-br from-primary/30 to-accent/30 mb-3 sm:mb-4">
-                    <Sparkles size={28} className="text-primary" />
-                  </div>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    AI Image Recognition in Action
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="relative mx-auto max-w-full md:max-w-xl slide-up -mt-10 -mb-30 z-10">
+            <Image
+              src={frontGif}
+              alt="DVision AI Demo"
+              className="w-full h-auto object-contain rounded-xl pointer-events-none"
+              sizes="
+                    (max-width: 640px) 100vw,
+                    (max-width: 768px) 90vw,
+                    (max-width: 1024px) 80vw,
+                    700px
+                  "
+              draggable={false}
+            />
           </div>
         </div>
       </div>

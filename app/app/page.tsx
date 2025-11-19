@@ -1,62 +1,63 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Navigation from '@/components/navigation'
-import ImageUploader from '@/components/image-uploader'
-import CaptionCard from '@/components/caption-card'
-import LoaderSpinner from '@/components/loader-spinner'
-import { toast } from 'sonner'
-import { motion } from 'framer-motion'
-import Footer from '@/components/footer'
+import { useState } from "react";
+import Navigation from "@/components/navigation";
+import ImageUploader from "@/components/image-uploader";
+import CaptionCard from "@/components/caption-card";
+import LoaderSpinner from "@/components/loader-spinner";
+import { toast } from "sonner";
+import { motion } from "framer-motion";
+import Footer from "@/components/footer";
 
 export default function AppPage() {
-  const [image, setImage] = useState<string | null>(null)
-  const [caption, setCaption] = useState<string | null>(null)
-  const [detailedPrompt, setDetailedPrompt] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [image, setImage] = useState<string | null>(null);
+  const [caption, setCaption] = useState<string | null>(null);
+  const [detailedPrompt, setDetailedPrompt] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleImageSelect = (imageData: string) => {
-    setImage(imageData)
-    setCaption(null)
-    setError(null)
-  }
+    setImage(imageData);
+    setCaption(null);
+    setError(null);
+  };
 
   const handleGenerateCaption = async () => {
-    if (!image) return
+    if (!image) return;
 
-    setLoading(true)
-    setError(null)
-    setCaption(null)
+    setLoading(true);
+    setError(null);
+    setCaption(null);
 
     try {
-      const response = await fetch('/api/generate-caption', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image })
-      })
+      const response = await fetch("/api/generate-caption", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ image }),
+      });
 
-      if (!response.ok) throw new Error('Failed to generate caption')
+      if (!response.ok) throw new Error("Failed to generate caption");
 
-      const data = await response.json()
-      setCaption(data.caption)
-      setDetailedPrompt(data.detailed_prompt)
-      toast.success('Caption generated successfully!')
+      const data = await response.json();
+      setCaption(data.caption);
+      setDetailedPrompt(data.detailed_prompt);
+      toast.success("Caption generated successfully!");
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
-      setError(errorMessage)
-      toast.error(errorMessage)
+      const errorMessage =
+        err instanceof Error ? err.message : "An error occurred";
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleReset = () => {
-    setImage(null)
-    setCaption(null)
-    setDetailedPrompt(null)
-    setError(null)
-  }
+    setImage(null);
+    setCaption(null);
+    setDetailedPrompt(null);
+    setError(null);
+  };
 
   return (
     <main className="min-h-screen overflow-hidden">
@@ -73,17 +74,22 @@ export default function AppPage() {
         transition={{ duration: 0.7 }}
         className="pt-24 pb-10 text-center px-4 sm:px-6 lg:px-12"
       >
-        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight">
-          AI Image Caption Generator
+        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight uppercase">
+          AI Image{" "}
+          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            Caption
+          </span>{" "}
+          Generator
         </h1>
 
         <p className="mx-auto max-w-2xl text-gray-400 text-sm sm:text-base mt-4 px-2">
-          Upload your image and get an intelligent, human-like caption instantly.
+          Upload your image and get an intelligent, human-like caption
+          instantly.
         </p>
       </motion.section>
 
       {/* Info cards */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-12 pb-8">
+      {/* <div className="container mx-auto px-4 sm:px-6 lg:px-12 pb-8">
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div
             initial={{ opacity: 0, y: 12 }}
@@ -92,7 +98,9 @@ export default function AppPage() {
             className="p-4 sm:p-6 rounded-2xl bg-[#0b0b0b]/60 backdrop-blur-md border border-gray-800 shadow"
           >
             <h3 className="text-lg font-semibold mb-1">⚡ Fast Processing</h3>
-            <p className="text-xs text-gray-400">Get captions in just a few seconds powered by AI.</p>
+            <p className="text-xs text-gray-400">
+              Get captions in just a few seconds powered by AI.
+            </p>
           </motion.div>
 
           <motion.div
@@ -102,7 +110,9 @@ export default function AppPage() {
             className="p-4 sm:p-6 rounded-2xl bg-[#0b0b0b]/60 backdrop-blur-md border border-gray-800 shadow"
           >
             <h3 className="text-lg font-semibold mb-1">🎯 High Accuracy</h3>
-            <p className="text-xs text-gray-400">Captions are detailed, descriptive, and context-aware.</p>
+            <p className="text-xs text-gray-400">
+              Captions are detailed, descriptive, and context-aware.
+            </p>
           </motion.div>
 
           <motion.div
@@ -112,10 +122,12 @@ export default function AppPage() {
             className="p-4 sm:p-6 rounded-2xl bg-[#0b0b0b]/60 backdrop-blur-md border border-gray-800 shadow"
           >
             <h3 className="text-lg font-semibold mb-1">🖼️ Unlimited Uploads</h3>
-            <p className="text-xs text-gray-400">Upload as many images as you want — no limits.</p>
+            <p className="text-xs text-gray-400">
+              Upload as many images as you want — no limits.
+            </p>
           </motion.div>
         </div>
-      </div>
+      </div> */}
 
       {/* Main content area - responsive grid */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-12 pb-20">
@@ -127,7 +139,9 @@ export default function AppPage() {
             transition={{ duration: 0.5 }}
             className="p-4 sm:p-6 md:p-8 rounded-2xl border border-gray-800 backdrop-blur-md shadow-md bg-[#070707]/60"
           >
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 uppercase text-gray-300">Upload Image</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 uppercase text-gray-300">
+              Upload Image
+            </h2>
 
             {!image ? (
               <motion.div
@@ -136,7 +150,10 @@ export default function AppPage() {
                 transition={{ duration: 0.35 }}
                 className="rounded-2xl p-4 sm:p-6 border border-gray-800 bg-transparent"
               >
-                <ImageUploader onImageSelect={handleImageSelect} disabled={loading} />
+                <ImageUploader
+                  onImageSelect={handleImageSelect}
+                  disabled={loading}
+                />
               </motion.div>
             ) : (
               <>
@@ -161,9 +178,9 @@ export default function AppPage() {
                   <button
                     onClick={handleGenerateCaption}
                     disabled={loading}
-                    className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gray-900 border border-gray-700 hover:bg-gray-800 text-white font-medium transition"
+                    className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gray-900 border border-gray-700 hover:bg-gray-800 text-white font-medium transition flex items-center justify-center"
                   >
-                    {loading ? <LoaderSpinner size={18} /> : 'Generate Caption'}
+                    {loading ? <LoaderSpinner size={18} /> : "Generate Caption"}
                   </button>
 
                   <button
@@ -191,7 +208,9 @@ export default function AppPage() {
             transition={{ duration: 0.5 }}
             className="p-4 sm:p-6 md:p-8 rounded-2xl border border-gray-800 backdrop-blur-md shadow-md bg-[#070707]/60"
           >
-            <h2 className="text-lg sm:text-xl font-semibold mb-4 uppercase text-gray-300">Generated Caption</h2>
+            <h2 className="text-lg sm:text-xl font-semibold mb-4 uppercase text-gray-300">
+              Generated Caption
+            </h2>
 
             {caption ? (
               <motion.div
@@ -204,7 +223,7 @@ export default function AppPage() {
               </motion.div>
             ) : (
               <div className="flex items-center justify-center min-h-40 sm:min-h-[220px] rounded-lg border border-gray-800 text-gray-500 p-4">
-                {loading ? 'Analyzing...' : 'Your caption will appear here'}
+                {loading ? "Analyzing..." : "Your caption will appear here"}
               </div>
             )}
           </motion.div>
@@ -213,5 +232,5 @@ export default function AppPage() {
 
       <Footer />
     </main>
-  )
+  );
 }

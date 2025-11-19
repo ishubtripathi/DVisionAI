@@ -10,18 +10,28 @@ import IntegrationSection from '@/components/sections/integration-section'
 import UseCasesSection from '@/components/sections/use-cases-section'
 import CTA from '@/components/sections/cta-section'
 import Footer from '@/components/footer'
+import { useEffect, useState } from 'react'
+import Preloader from '@/components/Preloader'
 
 export default function Home() {
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200)
+    return () => clearTimeout(timer)
+  }, [])
+  if (loading) return <Preloader />
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <Navigation />
       <HeroSection />
-      <StatsSection />
-      <FeaturesSection />
+      {/* <StatsSection /> */}
+      {/* <FeaturesSection /> */}
       <UseCasesSection />
       <DemoSection />
-      <TestimonialsSection />
-      <IntegrationSection />
+      {/* <TestimonialsSection /> */}
+      {/* <IntegrationSection /> */}
       <CTA />
       <Footer />
     </main>
