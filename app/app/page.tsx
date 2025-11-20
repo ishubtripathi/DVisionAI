@@ -12,6 +12,9 @@ import Footer from "@/components/footer";
 export default function AppPage() {
   const [image, setImage] = useState<string | null>(null);
   const [caption, setCaption] = useState<string | null>(null);
+  const [detailedDescription, setDetailedDescription] = useState<string | null>(
+    null
+  );
   const [detailedPrompt, setDetailedPrompt] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,6 +22,8 @@ export default function AppPage() {
   const handleImageSelect = (imageData: string) => {
     setImage(imageData);
     setCaption(null);
+    setDetailedDescription(null);
+    setDetailedPrompt(null);
     setError(null);
   };
 
@@ -28,6 +33,8 @@ export default function AppPage() {
     setLoading(true);
     setError(null);
     setCaption(null);
+    setDetailedDescription(null);
+    setDetailedPrompt(null);
 
     try {
       const response = await fetch("/api/generate-caption", {
@@ -39,8 +46,11 @@ export default function AppPage() {
       if (!response.ok) throw new Error("Failed to generate caption");
 
       const data = await response.json();
+      console.log("Frontend received:", data); // Debug what frontend receives
+
       setCaption(data.caption);
-      setDetailedPrompt(data.detailed_prompt);
+      setDetailedDescription(data.detailed_description);
+      setDetailedPrompt(data.image_generation_prompt);
       toast.success("Caption generated successfully!");
     } catch (err) {
       const errorMessage =
@@ -55,6 +65,7 @@ export default function AppPage() {
   const handleReset = () => {
     setImage(null);
     setCaption(null);
+    setDetailedDescription(null);
     setDetailedPrompt(null);
     setError(null);
   };
@@ -76,58 +87,17 @@ export default function AppPage() {
       >
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight uppercase">
           AI Image{" "}
-          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Caption
           </span>{" "}
           Generator
         </h1>
 
         <p className="mx-auto max-w-2xl text-gray-400 text-sm sm:text-base mt-4 px-2">
-          Upload your image and get an intelligent, human-like caption
-          instantly.
+          Upload your image and get intelligent, human-like captions and
+          detailed prompts instantly.
         </p>
       </motion.section>
-
-      {/* Info cards */}
-      {/* <div className="container mx-auto px-4 sm:px-6 lg:px-12 pb-8">
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="p-4 sm:p-6 rounded-2xl bg-[#0b0b0b]/60 backdrop-blur-md border border-gray-800 shadow"
-          >
-            <h3 className="text-lg font-semibold mb-1">⚡ Fast Processing</h3>
-            <p className="text-xs text-gray-400">
-              Get captions in just a few seconds powered by AI.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="p-4 sm:p-6 rounded-2xl bg-[#0b0b0b]/60 backdrop-blur-md border border-gray-800 shadow"
-          >
-            <h3 className="text-lg font-semibold mb-1">🎯 High Accuracy</h3>
-            <p className="text-xs text-gray-400">
-              Captions are detailed, descriptive, and context-aware.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="p-4 sm:p-6 rounded-2xl bg-[#0b0b0b]/60 backdrop-blur-md border border-gray-800 shadow"
-          >
-            <h3 className="text-lg font-semibold mb-1">🖼️ Unlimited Uploads</h3>
-            <p className="text-xs text-gray-400">
-              Upload as many images as you want — no limits.
-            </p>
-          </motion.div>
-        </div>
-      </div> */}
 
       {/* Main content area - responsive grid */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-12 pb-20">
@@ -180,7 +150,11 @@ export default function AppPage() {
                     disabled={loading}
                     className="flex-1 py-2.5 sm:py-3 rounded-lg bg-gray-900 border border-gray-700 hover:bg-gray-800 text-white font-medium transition flex items-center justify-center"
                   >
-                    {loading ? <LoaderSpinner size={18} /> : "Generate Caption"}
+                    {loading ? (
+                      <LoaderSpinner size={18} />
+                    ) : (
+                      "Generate Captions"
+                    )}
                   </button>
 
                   <button
@@ -209,21 +183,41 @@ export default function AppPage() {
             className="p-4 sm:p-6 md:p-8 rounded-2xl border border-gray-800 backdrop-blur-md shadow-md bg-[#070707]/60"
           >
             <h2 className="text-lg sm:text-xl font-semibold mb-4 uppercase text-gray-300">
-              Generated Caption
+              Generated Results
             </h2>
 
-            {caption ? (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
-                className="rounded-lg bg-[#0b0b0b] border border-gray-800 p-4 sm:p-6"
-              >
-                <CaptionCard caption={caption} />
-              </motion.div>
+            {caption || detailedDescription || detailedPrompt ? (
+              <div className="space-y-4">
+                {/* Short Caption */}
+                {caption && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="rounded-lg bg-[#0b0b0b] border border-gray-800 p-4 sm:p-6"
+                  >
+                    <h3 className="text-sm font-medium text-gray-400 mb-2">
+                      Caption
+                    </h3>
+                    <CaptionCard
+                      caption={caption ?? undefined}
+                      type="caption"
+                    />
+                    <h3 className="text-sm font-medium text-gray-400 mb-2 mt-2">
+                      Prompt
+                    </h3>
+                    <CaptionCard
+                      description={detailedPrompt ?? undefined}
+                      type="prompt"
+                    />
+                  </motion.div>
+                )}
+              </div>
             ) : (
-              <div className="flex items-center justify-center min-h-40 sm:min-h-[220px] rounded-lg border border-gray-800 text-gray-500 p-4">
-                {loading ? "Analyzing..." : "Your caption will appear here"}
+              <div className="flex items-center justify-center min-h-40 sm:min-h-[220px] rounded-xl border border-gray-800 text-gray-500 p-4">
+                {loading
+                  ? "Analyzing image..."
+                  : "Your captions will appear here"}
               </div>
             )}
           </motion.div>

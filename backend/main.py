@@ -18,10 +18,10 @@ app = FastAPI(title="DVisionAI", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    # allow_origins=["*"],
     allow_origins=[
         "http://localhost:3000",
         "https://your-frontend.vercel.app"
+        "*"
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -51,10 +51,6 @@ def initialize_model():
         logger.info("✅ Processor loaded")
 
         logger.info("Loading model...")
-        # model = BlipForConditionalGeneration.from_pretrained(
-        #     "Salesforce/blip-image-captioning-large",
-        #     torch_dtype=torch.float32
-        # )
         model = BlipForConditionalGeneration.from_pretrained(
             "Salesforce/blip-image-captioning-large",
             torch_dtype=torch.float32,
@@ -91,6 +87,29 @@ async def health_check():
     }
 
 
+def format_image_generation_prompt(description: str) -> str:
+    """Convert a description into a proper text-to-image generation prompt"""
+    # Clean the description
+    description = description.strip()
+    
+    # Remove any repeated phrases and make it more prompt-like
+    prompt_parts = []
+    
+    # Add quality and style indicators
+    prompt_parts.append("high quality, detailed, professional photography")
+    
+    # Use the main description
+    prompt_parts.append(description)
+    
+    # Add technical specifications for image generation
+    prompt_parts.append("sharp focus, excellent composition, vibrant colors")
+    
+    # Join all parts
+    full_prompt = ", ".join(prompt_parts)
+    
+    return full_prompt
+
+
 @app.post("/generate-caption")
 async def generate_caption(file: UploadFile = File(...)):
     """
@@ -108,39 +127,50 @@ async def generate_caption(file: UploadFile = File(...)):
 
         logger.info(f"Processing image: {file.filename}, size: {image.size}")
 
-        # Instruction to produce a detailed prompt suitable for image generation
-        instruction = (
-            "Provide a detailed image-generation prompt suitable for a text-to-image model. "
-            "Include subject, scene, colors, lighting, mood, composition, camera/lens details, "
-            "materials/textures, clothing/styles (if any), art/style references, and suggested aspect ratio. "
-            "Keep it precise and comma-separated."
-        )
-
         with torch.no_grad():
             # Short caption (regular image caption)
             inputs_short = processor(images=image, return_tensors="pt")
             inputs_short = {k: v.to(device) for k, v in inputs_short.items()}
-            out_short = model.generate(**inputs_short, max_length=50, num_beams=5, early_stopping=True)
-            caption = processor.decode(out_short[0], skip_special_tokens=True)
-
-            # Detailed prompt (condition on same image + instruction text)
-            inputs_prompt = processor(images=image, text=instruction, return_tensors="pt")
-            inputs_prompt = {k: v.to(device) for k, v in inputs_prompt.items()}
-            out_prompt = model.generate(
-                **inputs_prompt,
-                max_length=220,
-                num_beams=5,
-                no_repeat_ngram_size=3,
+            out_short = model.generate(
+                **inputs_short, 
+                max_length=50, 
+                num_beams=5, 
                 early_stopping=True
             )
-            detailed_prompt = processor.decode(out_prompt[0], skip_special_tokens=True)
+            caption = processor.decode(out_short[0], skip_special_tokens=True)
 
-        logger.info(f"Caption: {caption}")
-        logger.info(f"Detailed prompt: {detailed_prompt}")
+            # Generate detailed description for image generation
+            text_prompt = "a detailed scene description:"
+            inputs_prompt = processor(images=image, text=text_prompt, return_tensors="pt")
+            inputs_prompt = {k: v.to(device) for k, v in inputs_prompt.items()}
+            
+            out_prompt = model.generate(
+                **inputs_prompt,
+                max_length=150,
+                num_beams=4,
+                no_repeat_ngram_size=2,
+                early_stopping=True,
+                temperature=0.8,
+                do_sample=True,
+                repetition_penalty=1.1
+            )
+            detailed_description = processor.decode(out_prompt[0], skip_special_tokens=True)
+
+            # Clean up the detailed description
+            if detailed_description.startswith("a detailed scene description:"):
+                detailed_description = detailed_description.replace("a detailed scene description:", "").strip()
+
+            # Format as a proper text-to-image generation prompt
+            image_generation_prompt = format_image_generation_prompt(detailed_description)
+
+        logger.info(f"Short Caption: {caption}")
+        logger.info(f"Detailed Description: {detailed_description}")
+        logger.info(f"Image Generation Prompt: {image_generation_prompt}")
 
         return {
             "caption": caption,
-            "detailed_prompt": detailed_prompt,
+            "detailed_description": detailed_description,
+            "image_generation_prompt": image_generation_prompt,
             "image_size": {"width": image.width, "height": image.height}
         }
 
@@ -170,36 +200,50 @@ async def generate_caption_base64(data: dict):
 
         logger.info(f"Processing base64 image, size: {image.size}")
 
-        instruction = (
-            "Provide a detailed image-generation prompt suitable for a text-to-image model. "
-            "Include subject, scene, colors, lighting, mood, composition, camera/lens details, "
-            "materials/textures, clothing/styles (if any), art/style references, and suggested aspect ratio. "
-            "Keep it precise and comma-separated."
-        )
-
         with torch.no_grad():
+            # Short caption
             inputs_short = processor(images=image, return_tensors="pt")
             inputs_short = {k: v.to(device) for k, v in inputs_short.items()}
-            out_short = model.generate(**inputs_short, max_length=50, num_beams=5, early_stopping=True)
-            caption = processor.decode(out_short[0], skip_special_tokens=True)
-
-            inputs_prompt = processor(images=image, text=instruction, return_tensors="pt")
-            inputs_prompt = {k: v.to(device) for k, v in inputs_prompt.items()}
-            out_prompt = model.generate(
-                **inputs_prompt,
-                max_length=220,
-                num_beams=5,
-                no_repeat_ngram_size=3,
+            out_short = model.generate(
+                **inputs_short, 
+                max_length=50, 
+                num_beams=5, 
                 early_stopping=True
             )
-            detailed_prompt = processor.decode(out_prompt[0], skip_special_tokens=True)
+            caption = processor.decode(out_short[0], skip_special_tokens=True)
 
-        logger.info(f"Caption: {caption}")
-        logger.info(f"Detailed prompt: {detailed_prompt}")
+            # Generate detailed description for image generation
+            text_prompt = "a detailed scene description:"
+            inputs_prompt = processor(images=image, text=text_prompt, return_tensors="pt")
+            inputs_prompt = {k: v.to(device) for k, v in inputs_prompt.items()}
+            
+            out_prompt = model.generate(
+                **inputs_prompt,
+                max_length=150,
+                num_beams=4,
+                no_repeat_ngram_size=2,
+                early_stopping=True,
+                temperature=0.8,
+                do_sample=True,
+                repetition_penalty=1.1
+            )
+            detailed_description = processor.decode(out_prompt[0], skip_special_tokens=True)
+
+            # Clean up the detailed description
+            if detailed_description.startswith("a detailed scene description:"):
+                detailed_description = detailed_description.replace("a detailed scene description:", "").strip()
+
+            # Format as a proper text-to-image generation prompt
+            image_generation_prompt = format_image_generation_prompt(detailed_description)
+
+        logger.info(f"Short Caption: {caption}")
+        logger.info(f"Detailed Description: {detailed_description}")
+        logger.info(f"Image Generation Prompt: {image_generation_prompt}")
 
         return {
             "caption": caption,
-            "detailed_prompt": detailed_prompt,
+            "detailed_description": detailed_description,
+            "image_generation_prompt": image_generation_prompt,
             "image_size": {"width": image.width, "height": image.height}
         }
 
@@ -211,8 +255,6 @@ async def generate_caption_base64(data: dict):
 
 
 if __name__ == "__main__":
-    # import uvicorn
-    # uvicorn.run(app, host="0.0.0.0", port=8000)
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)

@@ -5,9 +5,6 @@ const rawBackend = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000
 
 export const BACKEND_URL = rawBackend.replace("localhost", "127.0.0.1");
 
-// const BACKEND_URL =
-//   process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
-
 export async function POST(request: NextRequest) {
   try {
     const { image } = await request.json();
@@ -27,20 +24,17 @@ export async function POST(request: NextRequest) {
       throw new Error("Invalid base64 image data");
     }
 
-    // Convert base64 to Buffer
-    const buffer = Buffer.from(base64Data, "base64");
-    console.log("📌 Buffer size:", buffer.length);
-
-    // Create FormData with File (NOT JSON)
-    const formData = new FormData();
-    const file = new File([buffer], "image.jpg", { type: "image/jpeg" });
-    formData.append("file", file);
-
     console.log("📌 Sending to backend:", BACKEND_URL);
 
-    const backendResponse = await fetch(`${BACKEND_URL}/generate-caption`, {
+    // Call the base64 endpoint with JSON
+    const backendResponse = await fetch(`${BACKEND_URL}/generate-caption-base64`, {
       method: "POST",
-      body: formData, // Send FormData directly, not JSON
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image: `data:image/jpeg;base64,${base64Data}` // Send as proper base64 data URL
+      }),
     });
 
     console.log("📌 Backend status:", backendResponse.status);
@@ -55,7 +49,14 @@ export async function POST(request: NextRequest) {
     }
 
     const data = await backendResponse.json();
+    console.log("✅ Backend response:", data); // Debug the full response
+    
+    // Log all the fields we're getting from backend
     console.log("✅ Caption:", data.caption);
+    console.log("✅ Detailed Description:", data.detailed_description);
+    console.log("✅ Image Generation Prompt:", data.image_generation_prompt);
+    
+    // Forward the exact response from backend to frontend
     return NextResponse.json(data);
 
   } catch (error: any) {

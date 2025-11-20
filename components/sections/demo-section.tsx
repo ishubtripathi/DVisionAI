@@ -7,13 +7,13 @@ import workGif from "@/public/demo/DvisionWork.gif";
 
 export default function DemoSection() {
   return (
-    <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-12 bg-gradient-to-b from-transparent to-black/5">
+    <section className="py-16 md:py-24 px-4 sm:px-6 lg:px-12 bg-linear-to-b from-transparent to-black/5">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           {/* Left: Content */}
           <div className="space-y-6">
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-2 leading-tight uppercase">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Division
               </span>{" "}
               in action
@@ -35,7 +35,7 @@ export default function DemoSection() {
                   key={i}
                   className="flex items-start gap-3 p-4 bg-white/6 rounded-xl border border-white/6 backdrop-blur-sm hover:shadow-lg transition-all"
                 >
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent grid place-items-center">
+                  <div className="shrink-0 w-10 h-10 rounded-lg bg-linear-to-br from-primary to-accent grid place-items-center">
                     <CheckCircle2 className="text-white" size={18} />
                   </div>
                   <div>
@@ -63,8 +63,8 @@ export default function DemoSection() {
 
           {/* Right: Attractive demo preview */}
           <div className="relative">
-            <div className="rounded-2xl p-1 bg-gradient-to-br from-primary/10 to-accent/8">
-              <div className="rounded-2xl bg-gradient-to-b from-black/70 to-black/60 overflow-hidden border border-white/15 shadow-lg">
+            <div className="rounded-2xl p-1 bg-linear-to-br from-primary/10 to-accent/8">
+              <div className="rounded-2xl bg-linear-to-b from-black/70 to-black/60 overflow-hidden border border-white/15 shadow-lg">
                 {/* MAIN GIF AREA */}
                 <div
                   className="w-full max-w-full select-none"
@@ -98,7 +98,7 @@ export default function DemoSection() {
 
             {/* Accent badge */}
             <div className="absolute -top-3 -left-3 md:-left-4">
-              <div className="px-3 py-1 rounded-full bg-gradient-to-r from-primary to-accent text-xs font-semibold text-white shadow">
+              <div className="px-3 py-1 rounded-full bg-linear-to-r from-primary to-accent text-xs font-semibold text-white shadow">
                 Live Demo
               </div>
             </div>
