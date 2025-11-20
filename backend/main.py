@@ -41,18 +41,18 @@ def initialize_model():
     try:
         logger.info("🚀 Loading BLIP model and processor...")
 
-        # Determine device
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        # Determine device - force CPU on Render free tier
+        device = torch.device("cpu")  # Force CPU to save memory
         logger.info(f"✅ Using device: {device}")
 
-        # Load processor and model
+        # Load smaller model variant
         logger.info("Loading processor...")
-        processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+        processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")  # base instead of large
         logger.info("✅ Processor loaded")
 
         logger.info("Loading model...")
         model = BlipForConditionalGeneration.from_pretrained(
-            "Salesforce/blip-image-captioning-large",
+            "Salesforce/blip-image-captioning-base",  # base instead of large
             torch_dtype=torch.float32,
             low_cpu_mem_usage=True
         )
