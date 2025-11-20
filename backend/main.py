@@ -6,6 +6,7 @@ import torch
 from PIL import Image
 from transformers import BlipProcessor, BlipForConditionalGeneration
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,7 +18,11 @@ app = FastAPI(title="DVisionAI", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "https://your-frontend.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,9 +51,14 @@ def initialize_model():
         logger.info("✅ Processor loaded")
 
         logger.info("Loading model...")
+        # model = BlipForConditionalGeneration.from_pretrained(
+        #     "Salesforce/blip-image-captioning-large",
+        #     torch_dtype=torch.float32
+        # )
         model = BlipForConditionalGeneration.from_pretrained(
             "Salesforce/blip-image-captioning-large",
-            torch_dtype=torch.float32
+            torch_dtype=torch.float32,
+            low_cpu_mem_usage=True
         )
         logger.info("✅ Model loaded")
 
@@ -64,7 +74,9 @@ def initialize_model():
 
 @app.on_event("startup")
 async def startup_event():
+    import asyncio
     """Initialize model on startup"""
+    await asyncio.sleep(1)
     initialize_model()
 
 
@@ -199,5 +211,8 @@ async def generate_caption_base64(data: dict):
 
 
 if __name__ == "__main__":
+    # import uvicorn
+    # uvicorn.run(app, host="0.0.0.0", port=8000)
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
